@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Bala Yokesh
+#server
+server/node_modules
