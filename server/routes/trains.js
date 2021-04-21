@@ -11,7 +11,8 @@ router.route('/search').get((req, res) => {
     const from = req.body.from;
     const pickUpTime = req.body.pickUpTime;
     const to = req.body.to;
-    // Only from is given
+
+    // Only from is given || to, pickUptime is not given
     if (from != "" && to == "" && pickUpTime == "") {
         Trains.find({"departure_station": from})
         .then(trains => res.json(trains))
@@ -29,6 +30,7 @@ router.route('/search').get((req, res) => {
         .then(trains => res.json(trains))
         .catch(err => res.status(400).json(`Error: ${err}`));
     }
+    // From, To, pickUpTime is given
     else {
         Trains.find({"departure_station": from, "departure_time": pickUpTime, "arrival_station": to})
         .then(trains => res.json(trains))
