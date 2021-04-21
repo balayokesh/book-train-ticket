@@ -9,10 +9,31 @@ router.route('/').get((req, res) => {
 
 router.route('/search').get((req, res) => {
     const from = req.body.from;
+    const pickUpTime = req.body.pickUpTime;
     const to = req.body.to;
-    Trains.find({"departure_station": from, "arrival_station": to})
+    // Only from is given
+    if (from != "" && to == "" && pickUpTime == "") {
+        Trains.find({"departure_station": from})
         .then(trains => res.json(trains))
         .catch(err => res.status(400).json(`Error: ${err}`));
+    }
+    // Only from and pickup time is given || to is not given
+    else if (from != "" && pickUpTime != "" && arrival_station == "") {
+        Trains.find({"departure_station": from, "departure_time": pickUpTime})
+        .then(trains => res.json(trains))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+    }
+    // Only from and to is given || pickupTime is not given
+    else if (from != "" && to != "" && pickUpTime == "") {
+        Trains.find({"departure_station": from, "arrival_station": to})
+        .then(trains => res.json(trains))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+    }
+    else {
+        Trains.find({"departure_station": from, "departure_time": pickUpTime, "arrival_station": to})
+        .then(trains => res.json(trains))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+    }
 });
 
 router.route('/add').post((req, res) => {
