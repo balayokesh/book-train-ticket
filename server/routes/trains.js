@@ -30,9 +30,26 @@ router.route('/search').get((req, res) => {
         .then(trains => res.json(trains))
         .catch(err => res.status(400).json(`Error: ${err}`));
     }
+    // Only to is given
+    if (from != "" && pickUpTime == "" && to == "") {
+        Trains.find({"departure_station": from})
+        .then(trains => res.json(trains))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+    }
     // From, To, pickUpTime is given
     else {
         Trains.find({"departure_station": from, "departure_time": pickUpTime, "arrival_station": to})
+        .then(trains => res.json(trains))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+    }
+});
+
+router.route('/load-route').get((req, res) => {
+    const from = req.body.from;
+
+    // only from is given
+    if (from != '') {
+        Trains.find({"route": from})
         .then(trains => res.json(trains))
         .catch(err => res.status(400).json(`Error: ${err}`));
     }
@@ -45,9 +62,10 @@ router.route('/add').post((req, res) => {
     const departure_station = req.body.departure_station;
     const arrival_time = req.body.arrival_time;
     const arrival_station = req.body.arrival_station;
+    const route = req.body.route;
 
     newTrain = new Trains({
-        train_num, train_name, departure_time, departure_station, arrival_time, arrival_station
+        train_num, train_name, departure_time, departure_station, arrival_time, arrival_station, route
     });
 
     newTrain.save()

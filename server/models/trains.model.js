@@ -26,6 +26,12 @@ const trainSchema = new mongoose.Schema (
             type: String,
             required: true
         },
+        route: [
+            {
+                type: String,
+                required: true
+            }
+        ]
     }
 )
 
