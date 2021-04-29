@@ -63,7 +63,7 @@ router.route('/:id/reservation').post((req, res) => {
 router.route('/:id/cancellation').post((req, res) => {
     const class_id = req.body.class_id;
     TrainAvailability.findOneAndUpdate({_id: class_id}, {$inc: {"availability.reserved": -1 }})
-        .then(() => res.json(`You booked class: ${class_id} at train ${req.params.id}`))
+        .then(() => res.json(`You cancelled class: ${class_id} at train ${req.params.id}`))
         .catch((err) => res.status(400).json(`Error: ${err}`));
 });
 
