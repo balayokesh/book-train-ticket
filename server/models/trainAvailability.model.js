@@ -3,22 +3,17 @@ const mongoose = require('mongoose');
 const trainAvailabilitySchema = new mongoose.Schema (
     {
         train_id: {
-            type: Number,
+            type: String,
             required: true,
-            unique: true
         },
         train_class: {
-            class_name: {
-                total_availability: {
-                    type: Number,
-                    default: 0
-                },
-                reserved: {
-                    type: Number,
-                    default: 0
-                }
-            },
+            type: String,
+            required: true
         },
+        availability: {
+            total_seats: { type: Number, default: 0 },
+            reserved: { type: Number, default: 0 }
+        }
     },
     {
         timestamps: true
