@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const Trains = require('../models/trains.model');
+const TrainAvailability = require('../models/trainAvailability.model');
 
+// Get all trains
 router.route('/').get((req, res) => {
     Trains.find()
         .then(trains => res.json(trains))
@@ -13,11 +15,11 @@ router.route('/search').get((req, res) => {
     const to = req.body.to;
     let filter = {};
 
-    // Only from is given || to, pickUptime is not given
+    // Only from is given
     if (from != "" && to == "" && pickUpTime == "") {
         filter = {"departure_station": from, "arrival_station": to};    
     }
-    // Only from and pickup time is given || to is not given
+    // Only from and pickup time is given
     else if (from != "" && pickUpTime != "" && arrival_station == from) {
         filter = {"departure_station": from, "departure_time": pickUpTime};    
     }
@@ -27,13 +29,14 @@ router.route('/search').get((req, res) => {
         filter = {"departure_station": from, "arrival_station": to};   
     }
     // Only to is given
-    else if (to != "") {
+    else if (to != "" && from === "" && pickUpTime === "") {
         filter = {"arrival_station": to};
     }
     // From, To, pickUpTime is given
-    else {
+    else if (from != "" && pickUpTime != "" && arrival_station != "") {
         filter = {"departure_station": from, "departure_time": pickUpTime, "arrival_station": to};
     }
+
     Trains.find(filter)
         .then(trains => res.json(trains))
         .catch(err => res.status(400).json(`Error: ${err}`));
@@ -41,10 +44,17 @@ router.route('/search').get((req, res) => {
 
 router.route('/load-route').get((req, res) => {
     const from = req.body.from;
+    const to = req.body.to
 
-    // only from is given
-    if (from != '') {
+    // From is given
+    if (from != '' && to == '') {
         Trains.find({"route": from})
+        .then(trains => res.json(trains))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+    }
+    // From and to is given
+    else if (from != '' && to != '') {
+        Trains.find({"route": from, "route": to})
         .then(trains => res.json(trains))
         .catch(err => res.status(400).json(`Error: ${err}`));
     }
@@ -53,14 +63,9 @@ router.route('/load-route').get((req, res) => {
 router.route('/add').post((req, res) => {
     const train_num = req.body.train_num;
     const train_name = req.body.train_name;
-    const departure_time = req.body.departure_time;
-    const departure_station = req.body.departure_station;
-    const arrival_time = req.body.arrival_time;
-    const arrival_station = req.body.arrival_station;
-    const route = req.body.route;
 
     newTrain = new Trains({
-        train_num, train_name, departure_time, departure_station, arrival_time, arrival_station, route
+        train_num, train_name
     });
 
     newTrain.save()
@@ -73,5 +78,20 @@ router.route('/:id').get((req, res) => {
         .then(train => res.json(train))
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
+
+// Add ticket availability for different classes
+router.route('/addseats').post((req, res) => {
+    const train_id = req.body.train_id;
+    const train_class = req.body.train_class;
+    const availability = req.body.availability;
+
+    trainDetails = new TrainAvailability ({
+        train_id, train_class, availability
+    });
+
+    trainDetails.save()
+        .then(() => res.json(`Train ${train_id} details updation success.`))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+})
 
 module.exports = router;
