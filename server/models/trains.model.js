@@ -5,18 +5,13 @@ const trainSchema = new mongoose.Schema (
         train_num: {
             type: Number,
             required: true,
-            unique: true
+            unique: true,
+            trim: true
         },
         train_name: {
             type: String,
             required: true
-        },
-        route: [
-            {
-                type: String,
-                required: true
-            }
-        ]
+        }
     },
     {
         timestamps: true
