@@ -13,7 +13,7 @@ app.use(bodyParser.json())
 // Mongoose connection
 const uri = 'mongodb+srv://username:strongpassword@train.ebtm0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 app.use(cors());
-mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(uri, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 const connection = mongoose.connection;
 connection.once('open', () => {
     console.log('Mongoose connection success');
