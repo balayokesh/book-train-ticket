@@ -10,30 +10,17 @@ const trainSchema = new mongoose.Schema (
             type: String,
             required: true
         },
-        departure_time: {
-            type: Date,
-            required: true
-        },
-        departure_station: {
-            type: String,
-            required: true
-        },
-        arrival_time: {
-            type: Date,
-            required: true
-        },
-        arrival_station: {
-            type: String,
-            required: true
-        },
         route: [
             {
                 type: String,
                 required: true
             }
         ]
+    },
+    {
+        timestamps: true
     }
-)
+);
 
 const trains = mongoose.model('Trains', trainSchema)
 module.exports = trains;
