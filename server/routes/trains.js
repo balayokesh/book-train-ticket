@@ -10,10 +10,10 @@ const TrainRoute = require('../models/trainRoute.model');
     /trains - fetch all from trains table
     /trains/add - add new document to trains table
     /trains/add/seats - add new document to trainAvailability table
+    /trains/add/route - add route for particular train id
     /trains/:id/availability - fetches all classes available in that particular train id
     /trains/:id/reservation - increments certain trains classes availability.reserved count
     /trains/:id/cancellation - decrements certain trains classes availability.reserved count
-    /trains/:id/addroute - add route for particular train id
 */
 
 router.route('/').get((req, res) => {
@@ -49,6 +49,22 @@ router.route('/addseats').post((req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
+router.route('/addroute').post((req, res) => {
+    const train_id = req.body.train_id;
+    const from = req.body.from;
+    const to = req.body.to;
+    const from_station_time = req.body.from_station_time;
+    const to_station_time = req.body.to_station_time;
+
+    routeDetails = new TrainRoute ({
+        train_id, from, to, from_station_time, to_station_time
+    });
+
+    routeDetails.save()
+        .then(() => res.json(`Route for train: ${train_id} added successfully`))
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+});
+
 router.route('/:id/availability').get((req, res) => {
     TrainAvailability.find({train_id: req.params.id})
         .then((availabilities) => res.json(availabilities))
@@ -66,22 +82,6 @@ router.route('/:id/cancellation').post((req, res) => {
     const class_id = req.body.class_id;
     TrainAvailability.findOneAndUpdate({_id: class_id}, {$inc: {"availability.reserved": -1 }})
         .then(() => res.json(`You cancelled class: ${class_id} at train ${req.params.id}`))
-        .catch((err) => res.status(400).json(`Error: ${err}`));
-});
-
-router.route('/addroute').post((req, res) => {
-    const train_id = req.body.train_id;
-    const from = req.body.from;
-    const to = req.body.to;
-    const from_station_time = req.body.from_station_time;
-    const to_station_time = req.body.to_station_time;
-
-    routeDetails = new TrainRoute ({
-        train_id, from, to, from_station_time, to_station_time
-    });
-
-    routeDetails.save()
-        .then(() => res.json(`Route for train: ${train_id} added successfully`))
         .catch((err) => res.status(400).json(`Error: ${err}`));
 });
 
