@@ -9,8 +9,8 @@ const TrainRoute = require('../models/trainRoute.model');
     Existing Routes:
     /trains - fetch all from trains table
     /trains/add - add new document to trains table
-    /trains/add/seats - add new document to trainAvailability table
-    /trains/add/route - add route for particular train id
+    /trains/addseat - add new document to trainAvailability table
+    /trains/addroute - add route for particular train id
     /trains/:id/availability - fetches all classes available in that particular train id
     /trains/:id/reservation - increments certain trains classes availability.reserved count
     /trains/:id/cancellation - decrements certain trains classes availability.reserved count
@@ -35,7 +35,7 @@ router.route('/add').post((req, res) => {
         .catch(err => res.status(400).json(`Error: ${err}`));
 });
 
-router.route('/addseats').post((req, res) => {
+router.route('/addseat').post((req, res) => {
     const train_id = req.body.train_id;
     const train_class = req.body.train_class;
     const availability = req.body.availability;
