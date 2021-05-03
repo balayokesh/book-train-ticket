@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const createJWT = (email, userId, duration) => {
     const payload = {
         email,
-        userID,
-        duration
+        userId,
     };
     return jwt.sign(
         payload, 
