@@ -15,9 +15,17 @@ router.route('/signin').get((req, res) => {
             bcrypt.compare(password, user.password)
                 .then((result) => {
                     if (result === true) {
-                        createJWT(
-                            
-                        )
+                        let accessToken = createJWT (
+                            user.email,
+                            user._id,
+                            3600
+                        );
+                        jwt.verify(accessToken, process.env.TOKEN_SECRET)
+                            .then((decoded) => {
+                                if (decoded) res.json(user);
+                                else res.json('Token verification failed');
+                            })
+                            .catch((err) => res.status(400).json(err)); 
                     }
                     else {
                         res.json('Password doesn\'t match');
