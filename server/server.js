@@ -22,6 +22,8 @@ connection.once('open', () => {
 // Routes
 const trains = require('./routes/trains');
 app.use('/trains', trains);
+const auth = require('./routes/auth');
+app.use('/auth', auth);
 
 // Run server
 app.listen(port, () => {
