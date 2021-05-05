@@ -19,10 +19,12 @@ exports.signin = (req, res) => {
                         );
                         jwt.verify(accessToken, process.env.TOKEN_SECRET)
                             .then((decoded) => {
-                                if (decoded) res.json(user);
-                                else res.json('Token verification failed');
+                                if (decoded) {
+                                    return res.json(user);
+                                }
+                                res.json('Token verification failed');
                             })
-                            .catch((err) => res.status(400).json(err)); 
+                            .catch((err) => res.status(400).json(err));
                     }
                     else {
                         res.json('Password doesn\'t match');
